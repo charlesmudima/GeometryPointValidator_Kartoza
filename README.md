@@ -22,3 +22,9 @@ Additional features:
 - Add feature to read exported file. User must input the filename and/or the full path of the file. The content of the file would be added to the current history. If you used list to store current history, then the file content would be added to that list.
 
 # Shapefile Validator 
+- Make a class that operates on a shapefile with these features as options. Each point would be a separate option on the screen.
+- Validate each feature, whether they are valid geometry or not.
+- Check the intersection among features. This will only be valid if the geometry type is LineString, MultiLineString, Polygon, or MultiPolygon. If the geometry type is not one of them, then show a warning that this feature is not applicable.
+- Remove invalid geometry and export to a shapefile. 
+- Remove intersecting geometry and export to a shapefile.
+- Convert to CSV. This will only be valid if the geometry type is Point. If the shapefile's geometry type is not Point, then show warning that this feature is not applicable.
