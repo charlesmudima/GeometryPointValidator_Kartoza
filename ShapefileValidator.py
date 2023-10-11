@@ -11,29 +11,50 @@
 # /home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/za_boundaries.shp
 
 from osgeo import ogr
-# the user is supposed to request for the path
-# we are supposed to read the path to the shapefile and open it.
-shapefile = ogr.Open("/path/to/shapefile")
+from osgeo import gdal
+from osgeo import osr # dealing with projections and spatial reference
+from shapely.geometry import shape
+shapefile_path = "/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/RandomPoints.shp"
 class ShapefileValidator:
-    # read the shapefile
-    # I think there should be classes that allow me to read in a shapefile
-    # I think there should be classes that al/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/za_boundaries.shp me to write to a shapefile
     def __init__(self, path):
         self.path = path
 
-    def readPathToFile():
-        # request the user to enter the path to the shapefile
-        # read the path to the shapefile
-        # return the path to the shapefile
+    def menu():
         print("================ShapeFileValidator=======================================")
+        print("1. Submit path to shapefile")
+        print("2. Exit")
+        mode = int(input("Enter mode:"))
+
+        if mode == 1:
+            print("=============================READING-IN SHAPEFILE=======================================")
+            ShapefileValidator.readPathToFile()
+        elif mode == 2:
+            print("Exit")
+            exit()
+
+    def readPathToFile():
         print("Please enter the path to the shapefile")
-        path = input("Enter path:")
-        file = ogr.Open(path)
+        # path = input("Enter path:") Temporarily removed this line
+        # ogr.Open(path, 0) # 0 means read-only. 1 means writeable. 
+        file = ogr.Open(shapefile_path)
         shape = file.GetLayer(0)
         #first feature of the shapefile
         feature = shape.GetFeature(0)
+        layerDefinition = shape.GetLayerDefn()
+        for i in range(layerDefinition.GetFieldCount()):
+            print(layerDefinition.GetFieldDefn(i).GetName())
+        # print(layerDefinition)
         first = feature.ExportToJson()
         print(first) # (GeoJSON format)
         {"geometry": {"type": "LineString", "coordinates": [[0.0, 0.0], [25.0, 10.0], [50.0, 50.0]]}, "type": "Feature", "properties": {"FID": 0.0}, "id": 0}
-
+        # ShapefileValidator.ConvertToShape(first)
+    
+    
+    def ConvertToShape(firstly):
+        print("###hey###")
+        shp_geom = shape(firstly['geometry']) # or shp_geom = shape(first) with PyShp
+        print(shp_geom)
+        # LINESTRING [(0 0, 25 10, 50 50)]
+        # print type(shp_geom)
+        # <class 'shapely.geometry.linestring.LineString'>
 ShapefileValidator.readPathToFile()
