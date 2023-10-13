@@ -39,8 +39,9 @@ class ShapefileProcessor:
     def remove_invalid_geometry_and_export(self, output_shapefile):
 
         valid_features, invalid_features = self.validate_geometry()
+       
 
-        with fiona.open(output_shapefile, 'w', driver= 'ESRI Shapefile', schema=output_shapefile.schema, crs=output_shapefile.crs) as output:
+        with fiona.open(output_shapefile, 'w', driver= 'ESRI Shapefile', schema=output_shapefile.schema) as output:
             for feature in valid_features:
                 # but you see here we are just writing the valid features out, but we are not taking of projections
                 output.write(feature)
@@ -69,6 +70,7 @@ class ShapefileProcessor:
 
     def remove_intersecting_geometry_and_export(self, output_shapefile):
         intersection_features = self.check_intersection()
+        
 
         with fiona.open(output_shapefile, 'w', driver='ESRI Shapefile', schema=output_shapefile.schema, crs=output_shapefile.crs) as output:
             for feature in intersection_features:
@@ -88,7 +90,7 @@ class ShapefileProcessor:
                     print("Warning: Some features have geometry types other than Point.")
 
             with open(output_csv, 'w') as csvfile:
-                print(source.schema)
+                # print(source.schema)
                 writer = csv.DictWriter(csvfile, fieldnames=source.schema['properties'].keys())
                 writer.writeheader()
                 for feature in point_features:
