@@ -40,10 +40,9 @@ class ShapefileProcessor:
 
         valid_features, invalid_features = self.validate_geometry()
 
-        with fiona.open(output_shapefile, 'w', driver= 'ESRI Shapefile', schema=output_shapefile.schema) as output:
+        with fiona.open(output_shapefile, 'w', driver= 'ESRI Shapefile', schema=output_shapefile.schema, crs=output_shapefile.crs) as output:
             for feature in valid_features:
-                # for key, val in feature.properties.items():
-                #     print(key, val)
+                # but you see here we are just writing the valid features out, but we are not taking of projections
                 output.write(feature)
 
     def check_intersection(self):
@@ -71,7 +70,7 @@ class ShapefileProcessor:
     def remove_intersecting_geometry_and_export(self, output_shapefile):
         intersection_features = self.check_intersection()
 
-        with fiona.open(output_shapefile, 'w', driver='ESRI Shapefile', schema=output_shapefile.schema) as output:
+        with fiona.open(output_shapefile, 'w', driver='ESRI Shapefile', schema=output_shapefile.schema, crs=output_shapefile.crs) as output:
             for feature in intersection_features:
                 print("Remember to change this back")
                 output.write(feature)
