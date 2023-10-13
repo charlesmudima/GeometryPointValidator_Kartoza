@@ -28,30 +28,20 @@ class ShapefileProcessor:
             for feature in source:
                 geom = shape(feature['geometry'])
                 if geom.is_valid:
+                    # adding the valid to the list
                     valid_features.append(feature)
                 else:
                     invalid_features.append(feature)
                     print(f"Invalid geometry found: {explain_validity(geom)}")
-        print("valid features below")
-        print(valid_features)
-        print("invalid features below")
-        print(invalid_features)
+    
         return valid_features, invalid_features
     
     def remove_invalid_geometry_and_export(self, output_shapefile):
-        # Update schema based on export
-        # How do I get a custom schema? 
-        # Instead of hardcoding, I should be able to get the schema from the source.
-        schema = {'geometry': 'Point', 'properties': {
-		'id': 'int',
-		'Name': 'str:10',
-		'Location': 'int',
-        'Date': 'date', }}
+
         valid_features, invalid_features = self.validate_geometry()
 
-        with fiona.open(output_shapefile, 'w', driver= 'ESRI Shapefile', schema=schema) as output:
+        with fiona.open(output_shapefile, 'w', driver= 'ESRI Shapefile', schema=output_shapefile.schema) as output:
             for feature in valid_features:
-                # print(feature['geometry'])
                 # for key, val in feature.properties.items():
                 #     print(key, val)
                 output.write(feature)
@@ -79,16 +69,13 @@ class ShapefileProcessor:
         return intersection_features
 
     def remove_intersecting_geometry_and_export(self, output_shapefile):
-        schema = {'geometry': 'Point', 'properties': {
-		'id': 'int',
-		'Name': 'str:10',
-		'Location': 'int',
-        'Date': 'date', }}
         intersection_features = self.check_intersection()
 
-        with fiona.open(output_shapefile, 'w', driver='ESRI Shapefile', schema=schema) as output:
+        with fiona.open(output_shapefile, 'w', driver='ESRI Shapefile', schema=output_shapefile.schema) as output:
             for feature in intersection_features:
+                print("Remember to change this back")
                 output.write(feature)
+                
 
     def convert_to_csv(self, output_csv):
         point_features = []
@@ -111,9 +98,9 @@ class ShapefileProcessor:
 # Check the part that gets the features.
 
 # Example usage:
-shapefile_path = "/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/za_boundaries.shp"
-output_shapefile = "/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/za_output.shp"
-output_csv = "/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/za_output_csv.csv"
+shapefile_path = "/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/RandomPoints.shp"
+output_shapefile = "/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/Rdm_output.shp"
+output_csv = "/home/charles/Desktop/Kartoza_Project/GeometryPointValidator/GeometryPointValidator_Kartoza/shapefiles/Rdm_output.csv"
 
 processor = ShapefileProcessor(shapefile_path)
 processor.remove_invalid_geometry_and_export(output_shapefile)
